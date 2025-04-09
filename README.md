@@ -111,7 +111,3 @@ As your app grows and more pages are added, FSD allows for easy scaling. You can
 Feature-Sliced Design (FSD) focuses on organizing the application by **pages** instead of layers, making it easier to manage, scale, and maintain. By following this approach, your codebase will be modular, reusable, and easy to extend with new features or pages. 
 
 This architecture helps you maintain a clear structure as your application grows, with each page encapsulating its own logic, components, and services, while still allowing shared resources to be reused across the app.
-
----
-
-i need this in azerbaijani
