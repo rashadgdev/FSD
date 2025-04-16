@@ -2,112 +2,126 @@
 
 # Feature-Sliced Design (FSD) Architecture
 
-This project follows the **Feature-Sliced Design (FSD)** pattern, a modular architecture pattern aimed at improving scalability, maintainability, and code quality in large applications. In this approach, we focus primarily on organizing the application into **pages** that encapsulate specific features and their related components.
+This project follows the **Feature-Sliced Design (FSD)** pattern, a modular architecture pattern aimed at improving scalability, maintainability, and code quality in large applications. In this approach, we organize the application around **pages**, **features**, **entities**, and **shared resources**, ensuring a clear and consistent structure.
 
 ## Overview
 
-Feature-Sliced Design (FSD) divides your application into **pages** (or features), ensuring that each part of the application is organized around domain logic. This results in better modularization, scalability, and separation of concerns. 
+Feature-Sliced Design (FSD) divides your application into meaningful segments such as **pages**, **features**, **entities**, and **shared**, allowing better modularization, scalability, and separation of concerns.
 
 ## Folder Structure
 
 ```
 src/
   app/
-    providers/             ← Core app providers (e.g., theme, authentication)
-    routes/                ← Routing setup for the app
+    providers/             ← Global providers (e.g., servicesProvider)
+      servicesProvider.tsx
+      index.ts             ← Export providers
+    routes/                ← Routing logic and route constants
+      routes.tsx
+      consts.ts
+      index.ts             ← Export routing
+
   pages/
-    home/
-      api/                 ← API logic related to the home page
-      components/          ← UI components specific to the home page
-      hooks/               ← Custom hooks for home page
-      lib/                 ← Helper functions related to the home page
-      providers/           ← Context providers specific to the home page
-      Home.tsx             ← The page component itself (entry point for the page)
+    view-guarantee/
+      api/                 ← API requests with React Query
+      lib/                 ← Utilities and helpers
+      models/              ← UI-related models
+      ui/                  ← Page-specific UI components (no nested components folder)
+
+  entities/
+    guaranteeLetters/
+      api/                 ← API service and request logic
+      models/              ← Interfaces and business models
+
+  features/
+    table-guarantee/
+      api/                 ← Feature-specific API services
+      lib/                 ← Feature utilities
+      models/              ← Feature models/interfaces
+      ui/                  ← UI components related to this feature
+
   shared/
-    api/                   ← Shared API services and helpers
-    components/            ← Reusable UI components (buttons, forms, etc.)
-    hooks/                 ← Shared hooks (useDebounce, useFetch, etc.)
-    lib/                   ← Shared utilities (validation, logging, etc.)
-    types/                 ← Shared types/interfaces used across pages
+    components/            ← Reusable UI components (buttons, inputs, etc.)
+    hooks/                 ← Shared hooks (e.g., useParams.ts)
+      useParams.ts
+      index.ts             ← Exports all shared hooks
+    lib/                   ← Shared utilities (validation, formatting, etc.)
+    models/                ← Shared types/interfaces
+    services/              ← Cross-cutting services (permission, env, notification, etc.)
+      index.ts             ← Export all services
+    enums/                 ← Enums used across the app
+    const.ts               ← Shared constants
+
   assets/                  ← Static assets (images, fonts, etc.)
-  index.ts                 ← Entry point for the app
-  App.tsx                  ← App setup and routing
+  index.ts                 ← App entry point
+  App.tsx                  ← App configuration and route mounting
 ```
 
 ---
 
 ## Folder Breakdown
 
-### **`app/`** - Global configuration and setup
-- **`providers/`**: Contains providers that are used globally throughout the application, such as `ThemeProvider`, `AuthProvider`, `HttpClientProvider`.
-- **`routes/`**: Holds route configuration and routing logic for the app. This is where the main `AppRoutes` are defined.
+### **`app/`** - Application-level setup
+- **`providers/`**: Includes global providers like `servicesProvider.tsx`. All providers are exported via `index.ts`.
+- **`routes/`**: Contains routing configuration (`routes.tsx`), route constants (`consts.ts`), and exports via `index.ts`.
 
-### **`pages/`** - Pages in the application
-Each **page** is self-contained and encapsulates everything related to that page (UI, state management, API logic). Pages can include:
-- **`api/`**: Services related to interacting with an API for that specific page (e.g., `getUserData`, `getPosts`).
-- **`components/`**: UI components specific to that page (e.g., `Header`, `Footer`, `ProfileCard`).
-- **`hooks/`**: Custom React hooks scoped to the page (e.g., `useFetchData`, `useSubmitForm`).
-- **`lib/`**: Helper functions related to the page (e.g., form validation, date formatting).
-- **`providers/`**: Context providers specific to that page, such as managing local page-level state or context.
-- **`PageName.tsx`**: The main page component (entry point) that organizes the page structure and connects the components, hooks, and other logic.
+### **`pages/`** - Top-level views
+Each **page** represents a view layer and is self-contained with its own structure:
+- **`api/`**: Contains API services using React Query. Instead of splitting into `hooks/` or `queries/`, we keep it unified as `api/`.
+- **`lib/`**: Page-specific utilities (e.g., data transformation, helpers).
+- **`models/`**: Page-specific UI types/interfaces.
+- **`ui/`**: Direct UI components related only to this page.
 
-### **`shared/`** - Shared code that can be reused across pages
-- **`api/`**: Shared services that can be used by any page (e.g., `httpClient.ts`).
-- **`components/`**: Reusable UI components that can be used across pages (e.g., buttons, modals, form elements).
-- **`hooks/`**: Reusable hooks used across the app (e.g., `useDebounce`, `useFetchData`).
-- **`lib/`**: Shared utilities that can be used by all pages (e.g., formatting functions, logging, or validation utilities).
-- **`types/`**: Shared TypeScript types/interfaces used across pages.
+### **`entities/`** - Business logic and core domain services
+- **`api/`**: Business service API logic, such as handling requests and endpoints.
+- **`models/`**: Domain models/interfaces for the entity.
 
-### **`assets/`** - Static assets such as images, fonts, and other media.
+### **`features/`** - Functional components that add value to pages
+- **`api/`**: Feature-specific API requests.
+- **`lib/`**: Feature logic and helpers.
+- **`models/`**: Interfaces/models for the feature.
+- **`ui/`**: UI components related to the feature, like modals, tables, etc.
+
+### **`shared/`** - Reusable and common logic
+- **`components/`**: Reusable UI components shared across the app.
+- **`hooks/`**: Shared hooks named explicitly (e.g., `useParams.ts`), all exported through `index.ts`.
+- **`lib/`**: Utility functions for validation, formatting, etc.
+- **`models/`**: Shared TypeScript interfaces and types.
+- **`services/`**: App-wide services like `PermissionService`, `EnvService`, `NotificationService`, and others, all exported through `index.ts`.
+- **`enums/`**: Enums used across multiple layers.
+- **`const.ts`**: Shared constants.
 
 ---
 
-## Why Feature-Sliced Design (FSD) for Pages?
+## Why Feature-Sliced Design (FSD)?
 
 ### **Modularity**
-FSD organizes the application around pages, with each page being self-contained. This modularity makes it easier to develop, maintain, and scale your application as you can focus on a single page at a time. 
+FSD emphasizes modular design where each folder serves a distinct purpose. Pages, features, and entities are well-isolated and reusable.
 
 ### **Separation of Concerns**
-By dividing the app into pages and ensuring each page has its own logic, components, hooks, and API services, FSD ensures that there’s a clear separation of concerns. Pages can manage their own local state and interactions without affecting other parts of the app.
+Responsibilities are clearly split between domain (entities), UI/UX (features and pages), and global logic (shared).
 
 ### **Reusability**
-Pages can reuse shared components, hooks, and utilities from the `shared/` folder, which promotes consistency and reduces code duplication across pages. For example, a button component in `shared/components/Button.tsx` can be reused in multiple pages.
+Features and shared components/hooks/services ensure maximum reuse, especially when it comes to business logic or UI components.
 
 ### **Scalability**
-As your app grows and more pages are added, FSD allows for easy scaling. You can add a new page by creating a folder under the `pages/` directory, and within it, organize its components, hooks, and API services. This results in a clear and scalable project structure.
-
----
-
-## Example: Home Page Structure
-
-```
-/pages/home/
-  api/
-    getUserData.ts         ← API service for fetching user data
-  components/
-    ProfileCard.tsx        ← UI component for showing a user profile
-  hooks/
-    useFetchUserData.ts    ← Custom hook to fetch user data
-  lib/
-    validateUser.ts        ← Helper function to validate user input
-  providers/
-    UserContext.tsx        ← Context provider for managing user state
-  Home.tsx                 ← The main component that uses all the above parts
-```
+New features, entities, and pages can be easily added without disrupting existing structures, making the architecture scale smoothly.
 
 ---
 
 ## Best Practices
 
-- **Page Isolation**: Keep each page isolated from other pages to reduce dependencies. Only share common logic through the `shared/` folder.
-- **Reusable Components**: For components that are used across different pages, place them in the `shared/components/` folder.
-- **Custom Hooks**: Define hooks in the `shared/hooks/` folder if they are generic and reusable across pages. Use page-specific hooks only when necessary.
-- **Types**: Shared types should reside in `shared/types/`, while page-specific types should be placed within the page folder.
+- **Keep page logic isolated** in its own folder.
+- **Use the `features/` folder** for high-value units like modals or data tables.
+- **Place domain-level logic** in the `entities/` folder.
+- **Export services/hooks/components cleanly** through `index.ts` files.
+- **Use explicit names** for hooks (`useSomething.ts`) instead of generic names.
 
 ---
 
 ## Conclusion
 
-Feature-Sliced Design (FSD) focuses on organizing the application by **pages** instead of layers, making it easier to manage, scale, and maintain. By following this approach, your codebase will be modular, reusable, and easy to extend with new features or pages. 
+Feature-Sliced Design (FSD) focuses on organizing the application by **functional boundaries** like pages, features, entities, and shared logic. This structure ensures a scalable, maintainable, and understandable codebase. With clear separation of concerns and modularity at its core, FSD provides an ideal foundation for growing applications with complex business requirements.
 
-This architecture helps you maintain a clear structure as your application grows, with each page encapsulating its own logic, components, and services, while still allowing shared resources to be reused across the app.
+---
+
