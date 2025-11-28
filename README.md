@@ -1,5 +1,3 @@
----
-
 # Feature-Sliced Design (FSD) Architecture
 
 This project follows the **Feature-Sliced Design (FSD)** pattern, a modular architecture pattern aimed at improving scalability, maintainability, and code quality in large applications. In this approach, we organize the application around **pages**, **features**, **entities**, and **shared resources**, ensuring a clear and consistent structure.
@@ -109,7 +107,7 @@ New features, entities, and pages can be easily added without disrupting existin
 
 ---
 
-## Best Practices
+### Best Practices
 
 - **Keep page logic isolated** in its own folder.
 - **Use the `features/` folder** for high-value units like modals or data tables.
@@ -119,9 +117,6 @@ New features, entities, and pages can be easily added without disrupting existin
 
 ---
 
-## Conclusion
+### Conclusion
 
 Feature-Sliced Design (FSD) focuses on organizing the application by **functional boundaries** like pages, features, entities, and shared logic. This structure ensures a scalable, maintainable, and understandable codebase. With clear separation of concerns and modularity at its core, FSD provides an ideal foundation for growing applications with complex business requirements.
-
----
-
